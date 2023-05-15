@@ -1,0 +1,228 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+    place-content: center;
+    place-items: center;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 40px 36px;
+    border: 1px solid #dadce080;
+    border-radius: 8px;
+    box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, .132), 0 0.3px 0.9px 0 rgba(0, 0, 0, .108);
+}
+
+.card-text {
+    width: 100%;
+    margin-top: 1rem;
+    font-weight: 300;
+    color: #202124;
+    font-size: .9rem;
+    line-height: 1.5;
+}
+
+.card-spacer {
+    margin-top: auto;
+}
+
+.card-footer {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+    font-size: 1.5rem;
+    font-weight: 300;
+    line-height: calc(4/3);
+    color: #202124;
+    font-family: "Segoe UI", arial, sans-serif;
+}
+
+h2 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: calc(4/3);
+    color: #202124;
+    font-family: "Segoe UI", arial, sans-serif;
+}
+
+.input-box {
+    display: flex;
+    margin-top: .25rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    padding: 0 .5rem;
+    border-radius: 8px;
+    position: relative;
+
+    .input-placeholder {
+        padding: 0 4px;
+        background-color: white;
+        position: absolute;
+        top: 50%;
+        color: #202124;
+        font-weight: 300;
+        transform: translate(1rem, -50%);
+        transition: .125s;
+    }
+
+    &:focus-within .input-placeholder {
+        top: 0%;
+        color: #0080ff;
+        transform: translate(0, -50%) scale(.8);
+    }
+
+    .input-placeholder:has(~.input-element:not(:placeholder-shown)) {
+        top: 0%;
+        transform: translate(0, -50%) scale(.8);
+    }
+
+    .input-element {
+        flex-grow: 1;
+        height: 64px;
+        border: none;
+        border-radius: 4px;
+        padding: 1rem;
+        margin: 1px 1px 0 1px;
+        color: #202124;
+        font-size: 17px;
+        outline: #0080ff00 solid 2px;
+        outline-offset: -2px;
+        border: 1px solid #dadce0;
+        transition: .125s;
+
+        &:focus {
+            outline: #0080ffc0 solid 2px;
+            border: 1px solid #0080ff80;
+        }
+    }
+
+    + .error-message {
+        height: 1lh;
+        overflow: hidden;
+        line-height: 0;           
+        color: #d83b01;
+        font-size: .8rem;
+    }
+
+    &.error {
+        .input-placeholder {
+            color: #d83b01;
+        }
+
+        .input-element {
+            outline: #d83b01c0 solid 2px;
+            border: 1px solid #d83b0180;
+        }
+
+        + .error-message {
+            line-height: 1rem;
+        }
+    }
+}
+
+.button {
+    display: inline-block;
+    background: none;
+    padding: .375rem;
+    padding-top: .5rem;
+    border: 0;
+    border-radius: 4px;
+    outline: 0;
+    font-size: .9rem;
+    text-decoration: none;
+    line-height: 1;
+    font-weight: 300;
+    transition: .125s;
+}
+
+.button-primary {
+    padding: .75rem 1.5rem;
+    background-color: #0080ff;
+    color: white;
+
+    &:hover {
+        filter: brightness(.95);
+    }
+
+    &:active {
+        filter: brightness(.9);
+    }
+
+    &:disabled {
+        background-color: #0060ff40;
+    }
+}
+
+
+.button-secondary {
+    padding: .75rem;
+    background-color: #0080ff00;
+    color: #0080ff;
+
+    &:hover {
+        background-color: #0080ff10;
+    }
+
+    &:active {
+        background-color: #0080ff20;
+    }
+}
+
+.step-container { 
+    flex-grow: 1;
+    overflow-x: hidden;
+}
+
+.step-row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    grid-column: 1fr;
+    gap: 1rem;
+    height: 100%;
+    width: 370px;
+    height: 400px;
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    place-items: center;
+    width: 370px;
+    height: 400px;
+}
+
+.webcam-container {
+    flex-grow: 1;
+    border: solid transparent;
+    border-width: 1rem 0;
+
+    video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+}

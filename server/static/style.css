@@ -1,0 +1,215 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  place-content: center;
+  place-items: center;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 40px 36px;
+  border: 1px solid rgba(218, 220, 224, 0.5019607843);
+  border-radius: 8px;
+  box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
+}
+
+.card-text {
+  width: 100%;
+  margin-top: 1rem;
+  font-weight: 300;
+  color: #202124;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.card-spacer {
+  margin-top: auto;
+}
+
+.card-footer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1.3333333333;
+  color: #202124;
+  font-family: "Segoe UI", arial, sans-serif;
+}
+
+h2 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.3333333333;
+  color: #202124;
+  font-family: "Segoe UI", arial, sans-serif;
+}
+
+.input-box {
+  display: flex;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  padding: 0 0.5rem;
+  border-radius: 8px;
+  position: relative;
+}
+.input-box .input-placeholder {
+  padding: 0 4px;
+  background-color: white;
+  position: absolute;
+  top: 50%;
+  color: #202124;
+  font-weight: 300;
+  transform: translate(1rem, -50%);
+  transition: 0.125s;
+}
+.input-box:focus-within .input-placeholder {
+  top: 0%;
+  color: #0080ff;
+  transform: translate(0, -50%) scale(0.8);
+}
+.input-box .input-placeholder:has(~ .input-element:not(:-moz-placeholder-shown)) {
+  top: 0%;
+  transform: translate(0, -50%) scale(0.8);
+}
+.input-box .input-placeholder:has(~ .input-element:not(:placeholder-shown)) {
+  top: 0%;
+  transform: translate(0, -50%) scale(0.8);
+}
+.input-box .input-element {
+  flex-grow: 1;
+  height: 64px;
+  border: none;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1px 1px 0 1px;
+  color: #202124;
+  font-size: 17px;
+  outline: rgba(0, 128, 255, 0) solid 2px;
+  outline-offset: -2px;
+  border: 1px solid #dadce0;
+  transition: 0.125s;
+}
+.input-box .input-element:focus {
+  outline: rgba(0, 128, 255, 0.7529411765) solid 2px;
+  border: 1px solid rgba(0, 128, 255, 0.5019607843);
+}
+.input-box + .error-message {
+  height: 1lh;
+  overflow: hidden;
+  line-height: 0;
+  color: #d83b01;
+  font-size: 0.8rem;
+}
+.input-box.error .input-placeholder {
+  color: #d83b01;
+}
+.input-box.error .input-element {
+  outline: rgba(216, 59, 1, 0.7529411765) solid 2px;
+  border: 1px solid rgba(216, 59, 1, 0.5019607843);
+}
+.input-box.error + .error-message {
+  line-height: 1rem;
+}
+
+.button {
+  display: inline-block;
+  background: none;
+  padding: 0.375rem;
+  padding-top: 0.5rem;
+  border: 0;
+  border-radius: 4px;
+  outline: 0;
+  font-size: 0.9rem;
+  text-decoration: none;
+  line-height: 1;
+  font-weight: 300;
+  transition: 0.125s;
+}
+
+.button-primary {
+  padding: 0.75rem 1.5rem;
+  background-color: #0080ff;
+  color: white;
+}
+.button-primary:hover {
+  filter: brightness(0.95);
+}
+.button-primary:active {
+  filter: brightness(0.9);
+}
+.button-primary:disabled {
+  background-color: rgba(0, 96, 255, 0.2509803922);
+}
+
+.button-secondary {
+  padding: 0.75rem;
+  background-color: rgba(0, 128, 255, 0);
+  color: #0080ff;
+}
+.button-secondary:hover {
+  background-color: rgba(0, 128, 255, 0.062745098);
+}
+.button-secondary:active {
+  background-color: rgba(0, 128, 255, 0.1254901961);
+}
+
+.step-container {
+  flex-grow: 1;
+  overflow-x: hidden;
+}
+
+.step-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  grid-column: 1fr;
+  gap: 1rem;
+  height: 100%;
+  width: 370px;
+  height: 400px;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  place-items: center;
+  width: 370px;
+  height: 400px;
+}
+
+.webcam-container {
+  flex-grow: 1;
+  border: solid transparent;
+  border-width: 1rem 0;
+}
+.webcam-container video {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 8px;
+}/*# sourceMappingURL=style.css.map */
