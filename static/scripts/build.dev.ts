@@ -8,7 +8,7 @@ const configurations: webpack.Configuration = {
     devtool: 'source-map',
 
     output: {
-        path: path.resolve('static'),
+        path: path.resolve('build'),
         filename: 'main.bundle.js'
     },
 
