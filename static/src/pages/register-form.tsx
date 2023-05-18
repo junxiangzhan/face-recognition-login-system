@@ -5,10 +5,18 @@ import Webcam from 'react-webcam';
 import axios, { AxiosError } from 'axios';
 import { StepItemContext, Steps } from '../components/steps';
 
+interface UserData {
+    nickname?: string;
+    birth?: number;
+    email?: string;
+}
+
 export const RegisterForm: React.FunctionComponent = function () {
 
     const [username, setUsername] = React.useState<string>(null);
+    const [userData, setUserData] = React.useState<UserData>({});
     const [images, setImages] = React.useState<Blob[]>([]);
+
     const captureCount = 5;
 
     React.useEffect(() => {
@@ -24,7 +32,7 @@ export const RegisterForm: React.FunctionComponent = function () {
             <img src="/static/google-logo.svg" alt="logo" style={{ width: 75 }} />
             <Steps>
                 <StepOne setUsername={setUsername} />
-                <StepTwo setImages={setImages} captureCount={captureCount} />
+                <StepThree setImages={setImages} captureCount={captureCount} />
             </Steps>
         </div>
     );
@@ -38,7 +46,6 @@ const StepOne: React.FunctionComponent<StepOneProps> = function (props: StepOneP
     const [username, setUsername] = React.useState<string>();
     const { nextStep } = React.useContext(StepItemContext);
     const [state, setState] = React.useState(StepOneState.isAvailable);
-
 
     async function submit() {
         if (state !== StepOneState.isAvailable) return;
@@ -89,12 +96,60 @@ const StepOne: React.FunctionComponent<StepOneProps> = function (props: StepOneP
     );
 }
 
+
 interface StepTwoProps {
+    setUserData(userData: UserData): void;
+}
+const StepTwo: React.FunctionComponent<StepTwoProps> = function (props: StepTwoProps): React.ReactElement {
+    const enum StepTwoState {EmailFormatError, EmptyError}
+
+    const [nickname, setNickname] = React.useState<string>();
+    const [birth, setBirth] = React.useState<string>();
+    const [email, setEmail] = React.useState<string>();
+
+    const [state, setState] = React.useState<StepTwoState[]>([]);
+
+    const { nextStep } = React.useContext(StepItemContext);
+
+
+    function emailInputHandler(e: React.FormEvent<HTMLInputElement>) {
+        const target = e.target as HTMLInputElement;
+        const username = target.value.trim().toLowerCase();
+        setUsername(username);
+
+        if (state === StepOneState.isError)
+            setState(StepOneState.isAvailable);
+    }
+
+    return (
+        <>
+            <h1>註冊</h1>
+            <h2>使用臉部識別註冊</h2>
+            <label className={
+                "input-box" +
+                (state.includes(StepTwoState.EmailFormatError) ? ' format-error' : '') + 
+                (state.includes(StepTwoState.EmptyError) ? ' empty-error' : '') 
+            }>
+                <span className="input-placeholder">請輸入電子郵件</span>
+                <input type="email" className="input-element" placeholder=" " onInput={emailInputHandler} />
+            </label>
+            <div className="error-message">* 輸入格式不正確。</div>
+            <div className="card-text">此為課程作品，僅具備登入及註冊功能。此作品會要求啟用鏡頭，請允許權限。</div>
+            <span className="card-spacer"></span>
+            <div className="card-footer">
+                <Link to="login" className="button button-secondary">登入帳戶</Link>
+                <button type="button" className="button button-primary" disabled={state.length !== 0} onClick={submit}>下一步</button>
+            </div>
+        </>
+    );
+}
+
+interface StepThreeProps {
     setImages(images: Blob[]): void;
     captureCount: number;
     isWaiting?: boolean;
 }
-const StepTwo: React.FunctionComponent<StepTwoProps> = function (props: StepTwoProps): React.ReactElement {
+const StepThree: React.FunctionComponent<StepThreeProps> = function (props: StepThreeProps): React.ReactElement {
     const enum CaptureButtonState { isAvailable, isCapturing, waitingServer }
     const webcamRef = React.useRef(null);
     const { prevStep, isCurrent } = React.useContext(StepItemContext);
