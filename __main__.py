@@ -2,47 +2,29 @@ from flask import Flask, request
 from datetime import datetime, timedelta
 import json
 import jwt
-from functions.test import Database
+from functions import Database
+from functions.Database import Database as dbA
 
 app = Flask(__name__)
 tokens = {}
 
-db = Database(r"data\\haarcascade_profileface.xml")
-users = {}
+CAS = 'data\\haarcascade_frontalface_alt2.xml'
+db = Database()
 
-# 使用者 ui
-@app.route('/', methods=['GET'])
-def default():
-    return app.send_static_file('index.html')
+users: dict[str, dict] = {}
 
-# 取得資訊
-@app.route('/<name>', methods=['GET'])
-def getInfo(name):
-    token = request.args.get('token')
+def get_playload(username, token):
+    if not token:
+        return False
+    tokens.get(token) == username
     payload = jwt.decodeToken(token)
 
-    if payload and tokens.get(token) == name:
+    if payload and tokens.get(token) == username:
         expires_time = payload.get('expires')
-        if datetime.now() > expires_time:
-            return json.dumps(None), 401
-        return json.dumps(users.get(name)), 200
-    elif token:
-        return json.dumps(None), 401
-    
-    if name in users:
-        return json.dumps({'nickname': users.get(name).get('nickname')}), 200
-    else:
-        return json.dumps(None), 404
+        return datetime.now() < expires_time
+    return False
 
-# 驗證
-@app.route('/<username>', methods=['PUT'])
-def login(username):
-    image = request.files.get('image')
-    # image.save(f'{username}.jpg')
-    # data=image.stream.read()
-
-    if username != 'test':
-        return json.dumps(None), 401
+def get_token(username):
 
     payload = {
         "username": username,
@@ -52,6 +34,45 @@ def login(username):
 
     jwt_token = jwt.generateToken(payload)
 
+    tokens.setdefault(jwt_token, username)
+    return jwt_token
+
+# 使用者 ui
+@app.route('/', methods=['GET'])
+def default():
+    return app.send_static_file('index.html')
+
+# 取得資訊
+@app.route('/<username>', methods=['GET'])
+def getInfo(username):
+    token = request.args.get('token')
+    payload = get_playload(username, token)
+
+    if payload:
+        return json.dumps(users.get(username)), 200
+    elif token:
+        return 'null', 401
+    
+    if username in users:
+        return json.dumps({
+            'username': username,
+            'nickname': users.get(username).get('nickname')
+        })
+    else:
+        return 'null', 404
+
+# 驗證
+@app.route('/<username>', methods=['PUT'])
+def login(username):
+
+    if username not in users:
+        return 'null', 404
+
+    image = request.files.get('image')
+    db.recognize(username, image)
+
+    jwt_token = get_token(username)
+
     return jwt_token
     
 
@@ -60,10 +81,13 @@ def login(username):
 def register(username):
 
     images = request.files.getlist('images')
+    user = json.loads(__str) if (__str := request.args.get('user')) else None
 
-    db.saveImages(username, images)
+    # if not user or type(user) != dict:
+    #     return 'null', 400
 
-    users.setdefault(username, {})
+    db.cut_pics(username, images)
+    users.setdefault(username, {'nickname': username})
 
     return json.dumps({
         'status': 'success',
@@ -72,6 +96,8 @@ def register(username):
 # 掃臉刪除
 @app.route('/<username>', methods=['DELETE'])
 def delete(username):
+    image = request.files.get('image')
+
     return json.dumps({
         'status': 'success',
         'match': 37.06

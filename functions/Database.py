@@ -3,14 +3,16 @@ import os
 import glob
 import numpy as np
 
-
 class Database:
 
     def __init__(self, sourcePath: str) -> None:
         self.sourcePath = sourcePath    # 資源路徑檔
         self.cascade = cv2.CascadeClassifier(self.sourcePath)  # 建立識別檔案物件
 
-    def takePics(self, total: int) -> None:
+
+
+    def takePics(self, username, images) -> None:
+
         """
         功能: 建立影像樣本資料夾
         參數:
@@ -21,45 +23,34 @@ class Database:
         # 若資料夾不存在則建立
         if not os.path.exists("pics"):
             os.mkdir("pics")
-
-        name = input("Enter name: ")  # 輸入欲建立之資料之名稱
+        
+        name = username # 輸入欲建立之資料之名稱
         # 確認是否建立過該人臉資料
-        if os.path.exists("pics\\"+name):
-            print("此人資料已存在")
-        else:
+        if not os.path.exists("pics\\"+name):
             os.mkdir("pics\\"+name)     # 建立資料夾
-            cap = cv2.VideoCapture(0)   # 開啟攝影機
-            num = 1     # 執行次數
+        
+        for num, image in enumerate(images):
 
-            while (cap.isOpened()):
-                ret, img = cap.read()   # 讀取影像
-                faces = self.cascade.detectMultiScale(
-                    img, scaleFactor=1.1, minNeighbors=3, minSize=(20, 20))
+            image.save('temp')
+            img = cv2.imread('temp')
 
-                for (x, y, w, h) in faces:
-                    cv2.rectangle(img, (x, y), (x+w, y+h),
-                                  (255, 0, 0), 2)  # 框住人臉
-                cv2.imshow("Photo", img)    # 顯示影像
-                key = cv2.waitKey(200)
+            faces = self.cascade.detectMultiScale(img, scaleFactor=1.1, minNeighbors=3, minSize=(20,20))
+            
+            for (x, y, w, h) in faces:
+                cv2.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)  # 框住人臉
+            cv2.imshow("Photo", img)    # 顯示影像
 
-                # 若是影像讀取成功 -> 按下"X"或"x"鍵以拍攝影像
-                if ret == True:
-                    if key == ord('x') or key == ord('X'):
-                        imageCrop = img[y:y+h, x:x+w]    # type: ignore # 裁切
-                        imageResize = cv2.resize(imageCrop, (160, 160))  # 重製大小
-                        faceName = "pics\\" + name + "\\" + \
-                            name + "_" + str(num) + ".jpg"
-                        cv2.imwrite(faceName, imageResize)  # 儲存影像
+            imageCrop = img[y:y+h,x:x+w]    # type: ignore # 裁切
+            imageResize = cv2.resize(imageCrop, (160,160))  # 重製大小
+            faceName = "pics\\" + name + "\\" + name + "_" + str(num) + ".jpg"
+            cv2.imwrite(faceName, imageResize)  # 儲存影像
 
-                        print(f"拍攝第 {num} 次人臉成功")
-                        if num == total:
-                            break
-                        num += 1
+            print(f"拍攝第 {num} 次人臉成功")
 
-            cap.release()   # 關閉攝影機
-            cv2.destroyAllWindows()
+    
 
     def buildDB(self) -> None:
+
         """
         功能: 讀取人臉樣本並放入faces_db，建立標籤與人名串列
         回傳: None
@@ -70,7 +61,7 @@ class Database:
             faces_db = []   # 儲存所有人臉
             labels = []     # 建立人臉標籤
             index = 0       # 員工編號索引
-
+            
             dirs = os.listdir("pics")
             # 讀取pics資料夾中的每個影像資料夾
             for dir in dirs:
@@ -79,8 +70,7 @@ class Database:
 
                     # 讀取每個影像檔案
                     for face in faces:
-                        img = cv2.imread(
-                            face, cv2.IMREAD_GRAYSCALE)    # 轉為灰度讀取
+                        img = cv2.imread(face, cv2.IMREAD_GRAYSCALE)    # 轉為灰度讀取
                         faces_db.append(img)
                         labels.append(index)
 
@@ -104,15 +94,18 @@ class Database:
         except Exception as e:
             print(e)
 
+
+    
     def login(self) -> None:
+
         """
         功能: 在人臉資料庫中找出最接近的員工標籤，匹配度低於50則算通過; 否則失敗
         回傳: None
         """
 
         # 建立LBPH人臉辨識物件，並讀取已訓練數據
-        model = cv2.face.LBPHFaceRecognizer_create()
-        model.read('pics\\deepmind.yml')
+        model = cv2.face.LBPHFaceRecognizer_create()   
+        model.read('pics\\deepmind.yml') 
 
         # 獲取名稱標籤
         file = open('pics\\people.txt', 'r')
@@ -121,11 +114,10 @@ class Database:
         cap = cv2.VideoCapture(0)
         while (cap.isOpened()):
             ret, img = cap.read()
-            faces = self.cascade.detectMultiScale(
-                img, scaleFactor=1.1, minNeighbors=3, minSize=(20, 20))
+            faces = self.cascade.detectMultiScale(img, scaleFactor=1.1, minNeighbors=3, minSize=(20,20))
 
             for (x, y, w, h) in faces:
-                cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)  # 框住人臉
+                cv2.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)  # 框住人臉
 
             cv2.imshow("Photo", img)    # 顯示影像
             key = cv2.waitKey(200)
@@ -133,11 +125,11 @@ class Database:
             # 若是影像讀取成功 -> 按下"X"或"x"鍵以拍攝影像
             if ret == True:
                 if key == ord('x') or key == ord('X'):
-                    imageCrop = img[y:y+h, x:x+w]    # type: ignore # 裁切
-                    imageResize = cv2.resize(imageCrop, (160, 160))  # 重製大小
+                    imageCrop = img[y:y+h,x:x+w]    # type: ignore # 裁切
+                    imageResize = cv2.resize(imageCrop, (160,160))  # 重製大小
                     cv2.imwrite("pics\\face.jpg", imageResize)  # 儲存影像
                     break
-
+        
         cap.release()   # 關閉攝影機
         cv2.destroyAllWindows()
 
