@@ -3,11 +3,11 @@ import os
 
 class Recognizer:
 
-    def __init__(self, cascadePath: str = 'data\\haarcascade_frontalface_alt2.xml', deepmind: str = 'facedata\\deepmind.yml') -> None:
+    def __init__(self, cascadePath: str = 'data\\haarcascade_frontalface_default.xml', deepmind: str = 'facedata\\deepmind.yml') -> None:
 
         """
         參數:
-            cascadePath(str): 影像偵測建置資源檔，此處建議使用'haarcascade_frontalface_alt2.xml'(存於data資料夾下)
+            cascadePath(str): 影像偵測建置資源檔，此處建議使用'haarcascade_frontalface_default.xml'(存於data資料夾下)
             deepmind(str): 人臉辨識訓練數據，預設名稱為'deepmind.yml'(存於facedata資料夾下)
         """
         self.cascadePath = cascadePath
@@ -39,6 +39,8 @@ class Recognizer:
             faces = face_cascade.detectMultiScale(img, scaleFactor=1.1,
                                                   minNeighbors=3, minSize=(20,20))
             
+            print(f"發現{len(faces)}張人臉")
+
             # 偵測找到多少人臉 -> 若是>1則回傳截圖失敗(False)，必須=1
             if len(faces) > 1:
                 print("照片多於一張人像，必須為個人照")

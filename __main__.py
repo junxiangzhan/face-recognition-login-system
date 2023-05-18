@@ -8,7 +8,7 @@ from functions.Database import Database as dbA
 app = Flask(__name__)
 tokens = {}
 
-CAS = 'data\\haarcascade_frontalface_alt2.xml'
+CAS = 'data\\haarcascade_frontalface_default.xml'
 db = Database()
 
 users: dict[str, dict] = {}

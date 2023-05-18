@@ -37,18 +37,21 @@ class CutPics:
             img = cv2.imread('__temp__\\temp')
 
             faces = cascade.detectMultiScale(img, scaleFactor=1.1, minNeighbors=3, minSize=(20,20))
-            
-            x, y, w, h = faces[0]
+            # 偵測找到多少人臉 -> 若是>1則回傳截圖失敗(False)，必須=1
+            if len(faces) > 1:
+                print("照片多於一張人像，必須為個人照")
+                return False
 
-            imageCrop = img[y:y+h,x:x+w]    # type: ignore # 裁切
-            imageResize = cv2.resize(imageCrop, (160,160))  # 重製大小
-            cv2.imwrite('facedata\\{}\\{}'.format(self.userName, image.filename), imageResize)  # 儲存影像
+            for (x, y, w, h) in faces:
+                imageCrop = img[y:y+h,x:x+w]    # type: ignore # 裁切
+                imageResize = cv2.resize(imageCrop, (160,160))  # 重製大小
+                cv2.imwrite('facedata\\{}\\{}'.format(self.userName, image.filename), imageResize)  # 儲存影像
             
             # faces = face_cascade.detectMultiScale(img, scaleFactor=1.1,
             #                                       minNeighbors=3, minSize=(20,20))
             
             # # 偵測找到多少人臉 -> 若是>1則回傳截圖失敗(False)，必須=1
-            # if len(faces) == 1:
+            # if len(faces) > 1:
             #     print("照片多於一張人像，必須為個人照")
             #     return False
 
@@ -58,6 +61,6 @@ class CutPics:
             # imageResize = cv2.resize(imageCrop, (160, 160))
 
             # cv2.imwrite(filename, imageResize)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
         return True
