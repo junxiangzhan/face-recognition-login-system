@@ -79,7 +79,7 @@ const StepOne: React.FunctionComponent<StepOneProps> = function (props: StepOneP
             <div className="card-text">此為課程作品，僅具備登入及註冊功能。此作品會要求啟用鏡頭，請允許權限。</div>
             <span className="card-spacer"></span>
             <div className="card-footer">
-                <Link to="register" className="button button-secondary">註冊新帳號</Link>
+                <Link to="/register" className="button button-secondary">註冊新帳號</Link>
                 <button type="button" className="button button-primary" disabled={!username || state !== StepOneState.isAvailable} onClick={submit}>下一步</button>
             </div>
         </>

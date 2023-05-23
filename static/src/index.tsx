@@ -1,16 +1,12 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 
-import { LoginForm } from './pages/login-form';
-import { RegisterForm } from './pages/register-form';
+import { App } from './app';
 
 const elements = (
     <HashRouter>
-        <Routes>
-            <Route path="/" element={<LoginForm />} />
-            <Route path="/register" element={<RegisterForm />} />
-        </Routes>
+        <App />
     </HashRouter>
 );
 

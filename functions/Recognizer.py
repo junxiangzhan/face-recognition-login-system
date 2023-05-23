@@ -81,7 +81,7 @@ class Recognizer:
         
         except Exception as e:
             print(e)
-            return False
+            return False, None
         
         # print(f'用戶名是 {users[score[0]]}')
         print(f'匹配值是 {score[1]:.2f}')

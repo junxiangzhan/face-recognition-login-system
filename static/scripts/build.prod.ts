@@ -7,7 +7,7 @@ const configurations: webpack.Configuration = {
     target: 'web',
 
     output: {
-        path: __dirname,
+        path: path.resolve('build'),
         filename: 'main.bundle.js'
     },
 

@@ -21,15 +21,16 @@ def get_playload(username, token):
 
     if payload and tokens.get(token) == username:
         expires_time = payload.get('expires')
-        return datetime.now() < expires_time
+        if datetime.now().timestamp() < expires_time:
+            return payload
     return False
 
-def get_token(username):
-
+def get_token(username) -> str:
+    iat = datetime.now()
     payload = {
         "username": username,
-        "iat": datetime.now(),
-        "expires": datetime.now() + timedelta(0, 1500)
+        "iat": iat.timestamp(),
+        "expires": (iat + timedelta(0, 1500)).timestamp()
     }
 
     jwt_token = jwt.generateToken(payload)
@@ -45,35 +46,33 @@ def default():
 # 取得資訊
 @app.route('/<username>', methods=['GET'])
 def getInfo(username):
-    token = request.args.get('token')
+    token = request.headers.get('token')
     payload = get_playload(username, token)
 
     if payload:
-        return json.dumps(users.get(username)), 200
+        return users.get(username), 200
     elif token:
-        return 'null', 401
+        return None, 401
     
     if username in users:
-        return json.dumps({
-            'username': username,
-            'nickname': users.get(username).get('nickname')
-        })
+        return {}, 200
     else:
-        return 'null', 404
+        return None, 404
 
 # 驗證
 @app.route('/<username>', methods=['PUT'])
 def login(username):
 
     if username not in users:
-        return 'null', 404
+        return None, 404
 
     image = request.files.get('image')
-    db.recognize(username, image)
-
-    jwt_token = get_token(username)
-
-    return jwt_token
+    if db.recognize(username, image):
+        return {
+            "token": get_token(username)
+        }
+    else:
+        return None, 401
     
 
 # 建檔
@@ -81,27 +80,28 @@ def login(username):
 def register(username):
 
     images = request.files.getlist('images')
-    user = json.loads(__str) if (__str := request.args.get('user')) else None
+    user = json.loads(__str) if (__str := request.form.get('userdata')) else None
 
-    # if not user or type(user) != dict:
-    #     return 'null', 400
+    if not user or type(user) != dict:
+        return None, 401
 
     db.cut_pics(username, images)
-    users.setdefault(username, {'nickname': username})
+    users.setdefault(username, user)
 
-    return json.dumps({
-        'status': 'success',
-    })
+    return {
+        "token": get_token(username)
+    }
+    
 
 # 掃臉刪除
 @app.route('/<username>', methods=['DELETE'])
 def delete(username):
     image = request.files.get('image')
 
-    return json.dumps({
+    return {
         'status': 'success',
         'match': 37.06
-    })
+    }
 
 if __name__ == '__main__':
     app.run()

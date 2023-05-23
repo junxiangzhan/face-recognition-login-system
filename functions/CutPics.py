@@ -32,6 +32,9 @@ class CutPics:
         """
         cascade = cv2.CascadeClassifier(self.cascadePath)
         
+        if not os.path.exists('__temp__'):
+            os.mkdir('__temp__')
+            
         for image in images:
             image.save('__temp__\\temp')
             img = cv2.imread('__temp__\\temp')

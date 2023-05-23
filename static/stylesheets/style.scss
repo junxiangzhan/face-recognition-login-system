@@ -68,8 +68,7 @@ h2 {
 
 .input-box {
     display: flex;
-    margin-top: .25rem;
-    margin-bottom: 1rem;
+    margin: .5rem 0;
     width: 100%;
     padding: 0 .5rem;
     border-radius: 8px;
@@ -212,6 +211,7 @@ h2 {
     place-items: center;
     width: 370px;
     height: 400px;
+    overflow-y: auto;
 }
 
 .webcam-container {
