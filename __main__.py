@@ -2,8 +2,8 @@ from flask import Flask, request
 from datetime import datetime, timedelta
 import json
 import jwt
-from functions import Database
-from functions.Database import Database as dbA
+from functions_v2 import Database
+# from functions_v1.Database import Database as dbA
 
 app = Flask(__name__)
 tokens = {}
