@@ -49,7 +49,7 @@ export const RegisterForm: React.FunctionComponent = function () {
 
     return (
         <div className="card">
-            <img src="/static/google-logo.svg" alt="logo" style={{ width: 75 }} />
+            <img src="/static/images/google-logo.svg" alt="logo" style={{ width: 75 }} />
             <Steps>
                 <StepOne setUsername={setUsername} />
                 <StepTwo setUserData={setUserData} />
@@ -73,9 +73,9 @@ const StepOne: React.FunctionComponent<StepOneProps> = function (props: StepOneP
         setState(StepOneState.isWaiting);
 
         try {
-            const res = await axios.get(`/${username}`);
+            const res = await axios.head(`/${username}`);
 
-            if (res.status === 200)
+            if (res.status !== 200)
                 setState(StepOneState.isError);
         } catch (err) {
             const { response: res } = err as AxiosError;
@@ -134,8 +134,8 @@ const StepTwo: React.FunctionComponent<StepTwoProps> = function (props: StepTwoP
 
     function nicknameInputHandler(e: React.FormEvent<HTMLInputElement>) {
         const target = e.target as HTMLInputElement;
-        const email = target.value.trim().toLowerCase();
-        setNickname(email);
+        const nickname = target.value.trim().toLowerCase();
+        setNickname(nickname);
     }
 
     function emailInputHandler(e: React.FormEvent<HTMLInputElement>) {
@@ -175,7 +175,7 @@ const StepTwo: React.FunctionComponent<StepTwoProps> = function (props: StepTwoP
         if (error) return;
         
         props.setUserData({
-            nickname, birth, email
+            nickname: nickname || null, birth, email
         })
 
         nextStep();

@@ -6,6 +6,7 @@ import { RegisterForm } from './pages/register-form';
 import { Homepage } from "./pages/homepage";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
+import { UserInfo } from "./pages/user-info";
 
 export const storage = new class {
     private eventTarget: EventTarget;
@@ -101,7 +102,11 @@ export const App: React.FunctionComponent = function () {
         <div>Loading</div>
     ) : (
         <Routes>
-            <Route path="/" element={<Homepage />} />
+            <Route path="/" element={<Homepage />}>
+                <Route path="/" element={<UserInfo />} />
+                <Route path="/settings" element={<div>Settings</div>} />
+                <Route path="/logout" element={<div>Logout</div>} />
+            </Route>
             <Route path="*" element={<Navigate to="/" />} />
         </Routes>
     );

@@ -20,7 +20,7 @@ export const LoginForm: React.FunctionComponent = function () {
 
     return (
         <div className="card">
-            <img src="/static/google-logo.svg" alt="logo" style={{ width: 75 }} />
+            <img src="/static/images/google-logo.svg" alt="logo" style={{ width: 75 }} />
             <Steps>
                 <StepOne setUsername={setUsername} />
                 <StepTwo setImage={setImage} />
@@ -44,7 +44,7 @@ const StepOne: React.FunctionComponent<StepOneProps> = function (props: StepOneP
         setState(StepOneState.isWaiting);
 
         try {
-            const res = await axios.get(`/${username}`);
+            const res = await axios.head(`/${username}`);
 
             if (res.status === 200){
                 setState(StepOneState.isAvailable);
