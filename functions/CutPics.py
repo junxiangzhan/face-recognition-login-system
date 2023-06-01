@@ -25,8 +25,7 @@ class CutPics:
         功能: 照片截圖，用於訓練人臉辨識
 
         參數:
-            picName(str): 圖像檔案名稱
-            index(int): 同一位使用者拍攝的第[index]張照片
+            images: 要讀取的影像
 
         回傳: 布林值(bool)，代表是否截圖成功
         """
